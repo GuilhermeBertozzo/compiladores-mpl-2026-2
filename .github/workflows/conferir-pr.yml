@@ -1,4 +1,4 @@
-name: Conferir pull request
+name: Pre-aceitacao do pull request
 
 on:
   pull_request:
@@ -8,10 +8,47 @@ permissions:
 
 jobs:
   conferir:
-    runs-on: ubuntu-latest
+    name: Estrutura (so a pasta do grupo)
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: So a pasta do grupo, com GRUPO.md e sem dados pessoais
         run: bash .github/scripts/conferir-pr.sh "${{ github.event.pull_request.base.sha }}"
+
+  pre-aceitacao:
+    name: Portoes, funcional e qualidade
+    needs: conferir
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      # O ambiente da correcao: Python 3.12, Java 21, gcc 13, Ruby e PHP (o runner ja traz os outros)
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Descobrir a pasta do grupo
+        id: pasta
+        run: |
+          p=$(git diff --name-only "${{ github.event.pull_request.base.sha }}"...HEAD | grep '^grupos/' | cut -d/ -f2 | sort -u | head -1)
+          [[ "$p" =~ ^turma[AB]-[a-z0-9-]+$ ]] || { echo "::error::pasta do grupo nao encontrada"; exit 1; }
+          echo "nome=$p" >> "$GITHUB_OUTPUT"
+      - name: Laudo de pre-aceitacao
+        env:
+          CRIADO_EM: ${{ github.event.pull_request.created_at }}
+          PASTA: grupos/${{ steps.pasta.outputs.nome }}
+        run: |
+          python3 .github/scripts/pre_aceitacao.py --publico --pasta "$PASTA" --criado-em "$CRIADO_EM" \
+            --laudo laudo.md
+          rc=$?
+          cat laudo.md >> "$GITHUB_STEP_SUMMARY"
+          exit $rc
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: laudo-${{ steps.pasta.outputs.nome }}
+          path: laudo.*

@@ -8,6 +8,8 @@
 - Nome 2
 - Nome 3
 
+**Repositório do grupo (com o histórico de commits):** https://github.com/usuario/repositorio
+
 **Linguagem usada no compilador:** Python 3.12 / Java 21 / C / C++ / Ruby / PHP
 
 ## Como rodar
