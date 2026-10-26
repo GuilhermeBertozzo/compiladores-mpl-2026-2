@@ -1,0 +1,17 @@
+name: Conferir pull request
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  conferir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: So a pasta do grupo, com GRUPO.md e sem dados pessoais
+        run: bash .github/scripts/conferir-pr.sh "${{ github.event.pull_request.base.sha }}"
