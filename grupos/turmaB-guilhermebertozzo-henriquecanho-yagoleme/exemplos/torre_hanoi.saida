@@ -1,0 +1,12 @@
+Torre de Hanoi: 3 discos
+A -> C
+A -> B
+C -> B
+A -> C
+B -> A
+B -> C
+A -> C
+Movimentos realizados:
+7
+Conferencia:
+verdadeiro

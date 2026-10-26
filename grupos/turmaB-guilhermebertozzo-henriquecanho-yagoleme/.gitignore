@@ -1,0 +1,6 @@
+*.mplb
+__pycache__/
+*.pyc
+apresentacao/.build/
+apresentacao/__pycache__/
+.DS_Store

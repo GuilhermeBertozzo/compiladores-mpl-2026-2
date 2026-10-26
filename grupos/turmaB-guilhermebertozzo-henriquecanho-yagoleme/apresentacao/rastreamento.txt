@@ -1,0 +1,83 @@
+Expressão na linha 21
+
+TOKENS
+21,3,ID,passos
+21,10,ATRIBUI,=
+21,12,INTEIRO,2
+21,14,VEZES,*
+21,16,INTEIRO,3
+21,18,MAIS,+
+21,20,INTEIRO,1
+21,21,PONTO_VIRGULA,;
+
+AST
+atribuicao passos
+  binario +
+    binario *
+      literal inteiro 2
+      literal inteiro 3
+    literal inteiro 1
+
+TABELA
+escopo 0 global
+  quantidade|funcao|inteiro(inteiro)|2
+  hanoi|funcao|vazio(inteiro,texto,texto,texto)|9
+  principal|funcao|vazio()|17
+escopo 1 funcao quantidade pai 0
+  discos|parametro|inteiro|2
+escopo 2 bloco pai 1
+escopo 3 bloco pai 2
+escopo 4 funcao hanoi pai 0
+  discos|parametro|inteiro|9
+  origem|parametro|texto|9
+  destino|parametro|texto|9
+  apoio|parametro|texto|9
+escopo 5 bloco pai 4
+escopo 6 bloco pai 5
+escopo 7 funcao principal pai 0
+escopo 8 bloco pai 7
+  passos|variavel|inteiro|20
+  total|variavel|inteiro|22
+
+IR
+  t38 = 2
+  t39 = 3
+  t40 = t38 * t39
+  t41 = 1
+  t42 = t40 + t41
+  v5 = t42
+
+BYTECODE
+21:3 PUSH [2]
+21:3 STORE ["t38"]
+21:3 PUSH [3]
+21:3 STORE ["t39"]
+21:3 LOAD ["t38"]
+21:3 LOAD ["t39"]
+21:3 BINARY ["*", "inteiro"]
+21:3 STORE ["t40"]
+21:3 PUSH [1]
+21:3 STORE ["t41"]
+21:3 LOAD ["t40"]
+21:3 LOAD ["t41"]
+21:3 BINARY ["+", "inteiro"]
+21:3 STORE ["t42"]
+21:3 LOAD ["t42"]
+21:3 STORE ["v5"]
+
+SAÍDA
+Torre de Hanoi: 3 discos
+A -> C
+A -> B
+C -> B
+A -> C
+B -> A
+B -> C
+A -> C
+Movimentos realizados:
+7
+Conferencia:
+verdadeiro
+
+REPRODUÇÃO DO DEFEITO ANTERIOR
+erro execucao: linha 2, coluna 3: bytecode invalido: Unterminated string starting at: line 1 column 2 (char 1)
